@@ -113,3 +113,42 @@
 		to_chat(user, span_warning("I need a holy cross."))
 		return FALSE
 	return TRUE
+
+/obj/effect/proc_holder/spell/invoked/scold
+	name = "Scold"
+	overlay_state = "revive"
+	releasedrain = 40
+	chargedrain = 0
+	chargetime = 20
+	range = 15
+	warnie = "sydwarning"
+	no_early_release = TRUE
+	movement_interrupt = TRUE
+	chargedloop = /datum/looping_sound/invokeholy
+	req_items = list(/obj/item/clothing/neck/roguetown/psicross)
+	sound = 'sound/magic/churn.ogg'
+	associated_skill = /datum/skill/magic/holy
+	invocation = "Obey my word!"
+	invocation_type = "shout"
+	antimagic_allowed = TRUE
+	charge_max = 20 SECONDS
+	miracle = TRUE
+	devotion_cost = 30
+
+/obj/effect/proc_holder/spell/invoked/scold/cast(list/targets, mob/user = usr)
+	. = ..()
+	if(isliving(targets[1]))
+		var/mob/living/L = targets[1]
+		user.visible_message("<font color='yellow'>[user] raises their arms and demands obedience from [L]!</font>")
+		if(L.anti_magic_check(TRUE, TRUE))
+			return FALSE
+		if(!(L.job == "Templar" || L.job == "Acolyte" || L.job == "Churchling" || L.job == "Mortician" || L.job == "Druid"))
+			to_chat(user, span_danger("I have no power over this person."))
+			return FALSE
+		L.adjust_fire_stacks(5)
+		L.IgniteMob()
+		L.electrocute_act(5, src)
+		to_chat(L, span_danger("I'm scolded with Divine power!"))
+		addtimer(CALLBACK(L, TYPE_PROC_REF(/mob/living, ExtinguishMob)), 10 SECONDS)
+		return TRUE
+	return FALSE
