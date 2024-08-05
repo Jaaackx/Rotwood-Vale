@@ -116,10 +116,10 @@
 
 /obj/effect/proc_holder/spell/invoked/scold
 	name = "Scold"
-	overlay_state = "revive"
+	overlay_state = "createlight"
 	releasedrain = 40
 	chargedrain = 0
-	chargetime = 20
+	chargetime = 40
 	range = 15
 	warnie = "sydwarning"
 	no_early_release = TRUE
